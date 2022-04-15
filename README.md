@@ -19,5 +19,7 @@ After running yt-dataset-gen.py, run bot.py. This will train the bot with weight
 * Ensure nextPageToken is working, so that more than 50 videos per search are appended to list
 
 ## Credits:
+
 YouTube API: https://developers.google.com/youtube/v3
+
 keras: https://keras.io/
