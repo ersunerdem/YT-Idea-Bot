@@ -83,32 +83,35 @@ def train_bot():
     model.fit(X, y, epochs=40, batch_size=64, callbacks=desired_callbacks)
 
 
-def generate_text_from_model():
+def generate_text_from_model(num_to_generate=1):
     #Once trained, load weights and recompile with saved weights
     model.load_weights(filepath)
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
-    num_to_char = dict((i, c) for i, c in enumerate(chars))
+
+    n = 0
+    while n < num_to_generate:
+        num_to_char = dict((i, c) for i, c in enumerate(chars))
 
 
-    #Character generation
-    start = numpy.random.randint(0, len(x_data) - 1)
-    pattern = x_data[start]
-    print("Random Seed:")
-    print("\"", ''.join([num_to_char[value] for value in pattern]), "\"")
+        #Character generation
+        start = numpy.random.randint(0, len(x_data) - 1)
+        pattern = x_data[start]
+        print("Random Seed:")
+        print("\"", ''.join([num_to_char[value] for value in pattern]), "\"")
+        #Convert random seed to float values, predict next character and generate text
+        for i in range(random.randint(30,200)):
+            x = numpy.reshape(pattern, (1, len(pattern), 1))
+            x = x / float(len(chars))
+            prediction = model.predict(x, verbose=0)
+            index = numpy.argmax(prediction)
+            result = num_to_char[index]
 
-    #Convert random seed to float values, predict next character and generate text
-    for i in range(random.randint(30,200)):
-        x = numpy.reshape(pattern, (1, len(pattern), 1))
-        x = x / float(len(chars))
-        prediction = model.predict(x, verbose=0)
-        index = numpy.argmax(prediction)
-        result = num_to_char[index]
+            sys.stdout.write(result)
 
-        sys.stdout.write(result)
-
-        pattern.append(index)
-        pattern = pattern[1:len(pattern)]
+            pattern.append(index)
+            pattern = pattern[1:len(pattern)]
+        n += 1
 
 train_bot()
-generate_text_from_model()
+generate_text_from_model(num_to_generate=50)
